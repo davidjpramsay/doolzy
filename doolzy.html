@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bingo Grid</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .cell {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #000;
+      background-color: #f0f0f0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .highlight {
+      background-color: green;
+      color: white;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+    <div class="cell">DOOLZY</div>
+  </div>
+  <button id="doolzyBtn">DOOLZY</button>
+  <button id="clearBtn">Clear All</button>
+
+  <script>
+    const cells = document.querySelectorAll('.cell');
+    const doolzyBtn = document.getElementById('doolzyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    doolzyBtn.addEventListener('click', () => {
+      const available = Array.from(cells).filter(cell => !cell.classList.contains('highlight'));
+      if (available.length === 0) return;
+      const randomCell = available[Math.floor(Math.random() * available.length)];
+      randomCell.classList.add('highlight');
+    });
+
+    clearBtn.addEventListener('click', () => {
+      cells.forEach(cell => cell.classList.remove('highlight'));
+    });
+  </script>
+</body>
+</html>
