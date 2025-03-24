@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bingo Grid</title>
+  <title>Bingo Grid with Win Overlay</title>
   <style>
     body {
       font-family: sans-serif;
@@ -35,6 +35,25 @@
       margin: 5px;
       padding: 10px 20px;
     }
+    /* Fullscreen overlay */
+    #winOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    /* Image fills the screen */
+    #winOverlay img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
@@ -57,23 +76,85 @@
     <div class="cell">DOOLZY</div>
   </div>
   <button id="doolzyBtn">DOOLZY</button>
-  <button id="clearBtn">Clear All</button>
+
+  <div id="winOverlay">
+    <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGVpMXhhd2xlNGw3cHpyNGJ2Y3prdGRvZ3RqY2N3MHZraDdxdjdrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mTCfxBudgvnizpICDl/giphy.gif" alt="Win!">
+  </div>
 
   <script>
     const cells = document.querySelectorAll('.cell');
     const doolzyBtn = document.getElementById('doolzyBtn');
-    const clearBtn = document.getElementById('clearBtn');
+    const winOverlay = document.getElementById('winOverlay');
+
+    let gameWon = false; // Track if the game is already won
+
+    function checkWin() {
+      // Check rows
+      for (let i = 0; i < 4; i++) {
+        const start = i * 4;
+        if (
+          cells[start].classList.contains('highlight') &&
+          cells[start+1].classList.contains('highlight') &&
+          cells[start+2].classList.contains('highlight') &&
+          cells[start+3].classList.contains('highlight')
+        ) {
+          return true;
+        }
+      }
+      // Check columns
+      for (let i = 0; i < 4; i++) {
+        if (
+          cells[i].classList.contains('highlight') &&
+          cells[i+4].classList.contains('highlight') &&
+          cells[i+8].classList.contains('highlight') &&
+          cells[i+12].classList.contains('highlight')
+        ) {
+          return true;
+        }
+      }
+      // Check diagonal top-left to bottom-right
+      if (
+        cells[0].classList.contains('highlight') &&
+        cells[5].classList.contains('highlight') &&
+        cells[10].classList.contains('highlight') &&
+        cells[15].classList.contains('highlight')
+      ) {
+        return true;
+      }
+      // Check diagonal top-right to bottom-left
+      if (
+        cells[3].classList.contains('highlight') &&
+        cells[6].classList.contains('highlight') &&
+        cells[9].classList.contains('highlight') &&
+        cells[12].classList.contains('highlight')
+      ) {
+        return true;
+      }
+      return false;
+    }
+
+    function showWinOverlay() {
+      winOverlay.style.display = 'flex';
+      gameWon = true;
+    }
 
     doolzyBtn.addEventListener('click', () => {
+      // If the game is already won, do nothing
+      if (gameWon) return;
+
+      // Highlight a random unhighlighted cell
       const available = Array.from(cells).filter(cell => !cell.classList.contains('highlight'));
       if (available.length === 0) return;
       const randomCell = available[Math.floor(Math.random() * available.length)];
       randomCell.classList.add('highlight');
+
+      // Check for win
+      if (checkWin()) {
+        showWinOverlay();
+      }
     });
 
-    clearBtn.addEventListener('click', () => {
-      cells.forEach(cell => cell.classList.remove('highlight'));
-    });
+    // No click listener on the overlay — it stays until refresh.
   </script>
 </body>
 </html>
